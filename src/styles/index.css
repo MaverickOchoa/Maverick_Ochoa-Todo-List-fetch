@@ -10,3 +10,28 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+.bg{
+    width: 50%;
+    height: 650px;
+    background-color: rgb(215, 209, 209);
+    margin-top: 50px;
+}
+
+.title{
+    font-size: 5rem;
+}
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0px;
+}
+
+ul li{
+    display:flex;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 10px 5px;
+    padding: 5px;
+    justify-content: space-between;
+}
+
