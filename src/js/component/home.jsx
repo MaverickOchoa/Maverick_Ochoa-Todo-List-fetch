@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const firstWork ={
+const initialState ={
 	"list" : ""
 }
 
@@ -8,11 +8,9 @@ const firstWork ={
 //create your first component
 const Home = () => {
 
-	const [todo, setTodo] = useState(firstWork)
+	const [todo, setTodo] = useState(initialState)
 	const [error, setError] = useState(false)
-	const [todoList, setTodoList] = useState([
-		
-	])
+	const [todoList, setTodoList] = useState([]) 
 
 
 	const handleChange = (event) => {
@@ -23,17 +21,19 @@ const Home = () => {
 	}
 
 	const handleSubmit = (event) =>{
-		event.preventDefault()
-
-		//validar si los campos estan llenos
+		
+		if (event.key == "Enter"){
+			//validar si los campos estan llenos
 		if (todo.list.trim() === ""){
 			setError(true)
 			return
 		}
 
 		setTodoList([...todoList, todo])
-		setTodo(firstWork)
+		setTodo(initialState)
 		setError(false)
+	}
+		
 	}
 
 	const handleDelete = (index) => {
@@ -52,7 +52,7 @@ const Home = () => {
 				</div>
 
 				<div className="col-12 form-group">
-					<form action="" onSubmit={handleSubmit}>
+					<form onSubmit={(event) => event.preventDefault()}>
 					<input type="text" 
 						className="form-control " 
 						id="txtList"
@@ -60,9 +60,9 @@ const Home = () => {
 						value={todo.list}
 						placeholder="What needs to be done?"
 						onChange={handleChange}
-
+						onKeyDown={handleSubmit}
 					/>
-					<button type="submit" className="btn btn-primary mt-5 col-12"> Añadir Actividad</button>
+					{/*<button type="submit" className="btn btn-primary mt-5 col-12"> Añadir Actividad</button>*/}
 					</form>
 
 					<div className="col-12">
@@ -75,14 +75,23 @@ const Home = () => {
 								todoList.map((item,index) =>{
 									return (
 										<li key={index}>
-											<p>{item.list}</p>
-											
-											<button className="btn btn-primary" onClick={() => handleDelete(index)}>Done</button>
+											<div >
+												<p>{item.list}</p>
+											</div>
+											<div  >
+												<span className="btn-delete" onClick={()=> handleDelete(index)}>X</span>
+											</div>	
 										</li>
 									)
 								})
 							}
 						</ul>
+					</div>
+					<div className="col-12">
+						Number of task for today :
+						{
+							todoList.length
+						}
 					</div>
 					
 				</div>

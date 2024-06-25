@@ -31,7 +31,31 @@ ul li{
     border: 1px solid black;
     border-radius: 5px;
     margin: 10px 5px;
-    padding: 5px;
+    padding: 15px;
     justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+p{
+      
+    margin-bottom: 0;
+}
+
+.btn-delete{
+    
+    width: 100%;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 0px 10px;
+    font-size: 1.8rem;
+    opacity: 0;
+}
+
+.btn-delete:hover{
+    opacity: 1;
 }
 
