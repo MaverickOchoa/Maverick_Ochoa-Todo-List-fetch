@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const initialState ={
-	"list" : ""
+	label : "",
+	is_done: false
 }
+
+const URLBASE = "https://playground.4geeks.com/todo"
 
 
 //create your first component
@@ -20,30 +23,85 @@ const Home = () => {
 		})
 	}
 
-	const handleSubmit = (event) =>{
-		
-		if (event.key == "Enter"){
-			//validar si los campos estan llenos
-		if (todo.list.trim() === ""){
-			setError(true)
-			return
-		}
-
-		setTodoList([...todoList, todo])
-		setTodo(initialState)
-		setError(false)
-	}
-		
-	}
-
-	const handleDelete = (index) => {
-		const newList = todoList.filter((_, i) => i !== index)
-		setTodoList(newList)
-
-
+	const handleSubmit = async (event) =>{
+		try {if (event.key === "Enter"){
+				//validar si los campos estan llenos
+				if (todo.label.trim() !== ""){
+					const responde = await fetch(`${URLBASE}/todos/maverick`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(todo)
+					})
+					if(responde.ok){
+						updateTask()
+						setTodo(initialState)
+					}else{
+						console.log()
+					}
+					
+				}
+			}
+		} catch (error) {
 			
-
+		}
 	}
+	
+	const updateTask = async () => {
+		try {
+			let responde = await fetch(`${URLBASE}/users/maverick`)
+			let data = await responde.json()
+			
+			if(responde.status == 404){
+				createUser()
+				updateTask()
+			}else{
+				setTodoList(data.todos)
+			}
+
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	
+
+	const handleDelete = (id) => {
+			
+		fetch(`${URLBASE}/todos/${id}`, {
+			method:"DELETE"
+		})
+		.then((responde)=> updateTask()) 
+		
+	}
+	const createUser = async ()=>{
+		try {
+			let responde = await fetch(`${URLBASE}/users/maverick`, {
+				method: "POST"
+			})
+		} catch (error) {
+			
+		}
+	}
+
+	async function deleteAll(){
+		try {
+			let responde = await fetch(`${URLBASE}/users/maverick`, {
+				method: "DELETE"
+			})
+			if(responde.status == 204){
+				updateTask()
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	useEffect(()=>{
+		updateTask()
+	},[])
+
 	return (
 		<div className="text-center justify-content-center d-flex">
 			<div className="col-12 bg px-5">
@@ -56,8 +114,8 @@ const Home = () => {
 					<input type="text" 
 						className="form-control " 
 						id="txtList"
-						name="list"
-						value={todo.list}
+						name="label"
+						value={todo.label}
 						placeholder="What needs to be done?"
 						onChange={handleChange}
 						onKeyDown={handleSubmit}
@@ -72,14 +130,14 @@ const Home = () => {
 					<div className="col-12">
 						<ul>
 							{
-								todoList.map((item,index) =>{
+								todoList.map((item) =>{
 									return (
-										<li key={index}>
+										<li key={item.id}>
 											<div >
-												<p>{item.list}</p>
+												<p>{item.label}</p>
 											</div>
 											<div  >
-												<span className="btn-delete" onClick={()=> handleDelete(index)}>X</span>
+												<span className="btn-delete" onClick={()=> handleDelete(item.id)}>X</span>
 											</div>	
 										</li>
 									)
@@ -93,7 +151,7 @@ const Home = () => {
 							todoList.length
 						}
 					</div>
-					
+					<button onClick={()=>{ deleteAll() }} className="btn btn-danger">Delete All</button>
 				</div>
 			</div>
 		</div>
