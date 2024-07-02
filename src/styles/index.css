@@ -43,7 +43,7 @@ p{
 }
 
 .btn-delete{
-    
+    cursor: pointer;
     width: 100%;
     position: absolute;
     inset: 0;
